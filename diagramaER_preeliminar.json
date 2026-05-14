@@ -1,0 +1,751 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "name": "New Project",
+  "sources": [
+    {
+      "id": "29c45327-431d-490c-9afc-bbeb3c709231",
+      "name": "default",
+      "kind": {
+        "kind": "AmlEditor"
+      },
+      "content": [
+        "type game_state (en_curso, completada, abandonada)",
+        "type user_genre (masculino, femenino, no_binario)",
+        "type user_level_of_exp (ninguno, principiante, intermedio, experto)",
+        "type name_instrument (PENS, GUESS, BANGS)",
+        "",
+        "",
+        "",
+        "User",
+        "  id uuid pk ",
+        "  user_name varchar(128)",
+        "  user_genre user_genre",
+        "  user_level_of_exp user_level_of_exp",
+        "  time_of_creation timestamp ",
+        "",
+        "Player",
+        "  player_id uuid pk",
+        "  player_name varchar(128)",
+        "  user_id uuid -> User(id) ",
+        "",
+        "Map",
+        "  id_map uuid pk",
+        "  episode int ",
+        "  map_code varchar(10) nullable",
+        "  map_name varchar(128)",
+        "  wide int",
+        "  length int",
+        "  end timestamp nullable",
+        "",
+        "Sector",
+        "  sector_id uuid pk",
+        "  map_id uuid -> Map(id_map)",
+        "  sector_code varchar(10) nullable",
+        "  descri text nullable",
+        "",
+        "Game",
+        "  game_id uuid pk",
+        "  mapa_id uuid -> Map(id_map)",
+        "  state game_state",
+        "  start timestampt",
+        "",
+        "Telemetry_event",
+        "  tel_id uuid pk",
+        "  participant_id uuid -> GameParticipant(participant_id)",
+        "  tic int check (`tic >= 0`)",
+        "  pos_x float",
+        "  pox_y float",
+        "  pos_z float",
+        "  angulo float",
+        "  momentum_x float",
+        "  momentum_y float",
+        "  momentum_z float",
+        "  fov float nullable",
+        "  salud int check (`salud >= 0 AND salud <= 200`)",
+        "  armadura int check(`armadura >= 0`)",
+        "  municion int check(`municion >= 0`)",
+        "  registrado_en timestamp",
+        "",
+        "GameParticipant  ",
+        "  participant_id uuid pk",
+        "  game_id uuid -> Game(game_id)",
+        "  player_id uuid -> Player(player_id)",
+        "  join_time timestamp",
+        "  leave_time timestamp nullable",
+        "",
+        "Instrument_UX",
+        "  instrument_id uuid pk",
+        "  name name_instrument",
+        "  version varchar(10)",
+        "  description text nullable",
+        "  min int",
+        "  max int",
+        "",
+        "Item_UX",
+        "  item_id uuid pk",
+        "  instrument_id uuid -> Instrument_UX(instrument_id)",
+        "  ",
+        "",
+        ""
+      ],
+      "tables": [
+        {
+          "schema": "",
+          "table": "Game",
+          "columns": [
+            {
+              "name": "game_id",
+              "type": "uuid"
+            },
+            {
+              "name": "mapa_id",
+              "type": "uuid"
+            },
+            {
+              "name": "state",
+              "type": "game_state"
+            },
+            {
+              "name": "start",
+              "type": "timestampt"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "game_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "GameParticipant",
+          "columns": [
+            {
+              "name": "participant_id",
+              "type": "uuid"
+            },
+            {
+              "name": "game_id",
+              "type": "uuid"
+            },
+            {
+              "name": "player_id",
+              "type": "uuid"
+            },
+            {
+              "name": "join_time",
+              "type": "timestamp"
+            },
+            {
+              "name": "leave_time",
+              "type": "timestamp",
+              "nullable": true
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "participant_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "Instrument_UX",
+          "columns": [
+            {
+              "name": "instrument_id",
+              "type": "uuid"
+            },
+            {
+              "name": "name",
+              "type": "name_instrument"
+            },
+            {
+              "name": "version",
+              "type": "varchar(10)"
+            },
+            {
+              "name": "description",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "min",
+              "type": "int"
+            },
+            {
+              "name": "max",
+              "type": "int"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "instrument_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "Item_UX",
+          "columns": [
+            {
+              "name": "item_id",
+              "type": "uuid"
+            },
+            {
+              "name": "instrument_id",
+              "type": "uuid"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "item_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "Map",
+          "columns": [
+            {
+              "name": "id_map",
+              "type": "uuid"
+            },
+            {
+              "name": "episode",
+              "type": "int"
+            },
+            {
+              "name": "map_code",
+              "type": "varchar(10)",
+              "nullable": true
+            },
+            {
+              "name": "map_name",
+              "type": "varchar(128)"
+            },
+            {
+              "name": "wide",
+              "type": "int"
+            },
+            {
+              "name": "length",
+              "type": "int"
+            },
+            {
+              "name": "end",
+              "type": "timestamp",
+              "nullable": true
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "id_map"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "Player",
+          "columns": [
+            {
+              "name": "player_id",
+              "type": "uuid"
+            },
+            {
+              "name": "player_name",
+              "type": "varchar(128)"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "player_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "Sector",
+          "columns": [
+            {
+              "name": "sector_id",
+              "type": "uuid"
+            },
+            {
+              "name": "map_id",
+              "type": "uuid"
+            },
+            {
+              "name": "sector_code",
+              "type": "varchar(10)",
+              "nullable": true
+            },
+            {
+              "name": "descri",
+              "type": "text",
+              "nullable": true
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "sector_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "Telemetry_event",
+          "columns": [
+            {
+              "name": "tel_id",
+              "type": "uuid"
+            },
+            {
+              "name": "participant_id",
+              "type": "uuid"
+            },
+            {
+              "name": "tic",
+              "type": "int"
+            },
+            {
+              "name": "pos_x",
+              "type": "float"
+            },
+            {
+              "name": "pox_y",
+              "type": "float"
+            },
+            {
+              "name": "pos_z",
+              "type": "float"
+            },
+            {
+              "name": "angulo",
+              "type": "float"
+            },
+            {
+              "name": "momentum_x",
+              "type": "float"
+            },
+            {
+              "name": "momentum_y",
+              "type": "float"
+            },
+            {
+              "name": "momentum_z",
+              "type": "float"
+            },
+            {
+              "name": "fov",
+              "type": "float",
+              "nullable": true
+            },
+            {
+              "name": "salud",
+              "type": "int"
+            },
+            {
+              "name": "armadura",
+              "type": "int"
+            },
+            {
+              "name": "municion",
+              "type": "int"
+            },
+            {
+              "name": "registrado_en",
+              "type": "timestamp"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "tel_id"
+            ]
+          },
+          "checks": [
+            {
+              "name": "Telemetry_event_tic_check_az",
+              "columns": [
+                "tic"
+              ],
+              "predicate": "tic >= 0"
+            },
+            {
+              "name": "Telemetry_event_salud_check_az",
+              "columns": [
+                "salud"
+              ],
+              "predicate": "salud >= 0 AND salud <= 200"
+            },
+            {
+              "name": "Telemetry_event_armadura_check_az",
+              "columns": [
+                "armadura"
+              ],
+              "predicate": "armadura >= 0"
+            },
+            {
+              "name": "Telemetry_event_municion_check_az",
+              "columns": [
+                "municion"
+              ],
+              "predicate": "municion >= 0"
+            }
+          ]
+        },
+        {
+          "schema": "",
+          "table": "User",
+          "columns": [
+            {
+              "name": "id",
+              "type": "uuid"
+            },
+            {
+              "name": "user_name",
+              "type": "varchar(128)"
+            },
+            {
+              "name": "user_genre",
+              "type": "user_genre"
+            },
+            {
+              "name": "user_level_of_exp",
+              "type": "user_level_of_exp"
+            },
+            {
+              "name": "time_of_creation",
+              "type": "timestamp"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "id"
+            ]
+          }
+        }
+      ],
+      "relations": [
+        {
+          "name": "",
+          "src": {
+            "table": ".Player",
+            "column": "user_id"
+          },
+          "ref": {
+            "table": ".User",
+            "column": "id"
+          }
+        },
+        {
+          "name": "",
+          "src": {
+            "table": ".Sector",
+            "column": "map_id"
+          },
+          "ref": {
+            "table": ".Map",
+            "column": "id_map"
+          }
+        },
+        {
+          "name": "",
+          "src": {
+            "table": ".Game",
+            "column": "mapa_id"
+          },
+          "ref": {
+            "table": ".Map",
+            "column": "id_map"
+          }
+        },
+        {
+          "name": "",
+          "src": {
+            "table": ".Telemetry_event",
+            "column": "participant_id"
+          },
+          "ref": {
+            "table": ".GameParticipant",
+            "column": "participant_id"
+          }
+        },
+        {
+          "name": "",
+          "src": {
+            "table": ".GameParticipant",
+            "column": "game_id"
+          },
+          "ref": {
+            "table": ".Game",
+            "column": "game_id"
+          }
+        },
+        {
+          "name": "",
+          "src": {
+            "table": ".GameParticipant",
+            "column": "player_id"
+          },
+          "ref": {
+            "table": ".Player",
+            "column": "player_id"
+          }
+        },
+        {
+          "name": "",
+          "src": {
+            "table": ".Item_UX",
+            "column": "instrument_id"
+          },
+          "ref": {
+            "table": ".Instrument_UX",
+            "column": "instrument_id"
+          }
+        }
+      ],
+      "types": [
+        {
+          "schema": "",
+          "name": "game_state",
+          "value": {
+            "enum": [
+              "en_curso",
+              "completada",
+              "abandonada"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "name": "name_instrument",
+          "value": {
+            "enum": [
+              "PENS",
+              "GUESS",
+              "BANGS"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "name": "user_genre",
+          "value": {
+            "enum": [
+              "masculino",
+              "femenino",
+              "no_binario"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "name": "user_level_of_exp",
+          "value": {
+            "enum": [
+              "ninguno",
+              "principiante",
+              "intermedio",
+              "experto"
+            ]
+          }
+        }
+      ],
+      "createdAt": 1777831119284,
+      "updatedAt": 1778740421149
+    }
+  ],
+  "layouts": {
+    "initial layout": {
+      "tables": [
+        {
+          "id": ".Item_UX",
+          "position": {
+            "left": 1520,
+            "top": 1410
+          },
+          "size": {
+            "width": 176.84382654315445,
+            "height": 93.00003334779427
+          },
+          "color": "cyan",
+          "columns": [
+            "item_id",
+            "instrument_id"
+          ]
+        },
+        {
+          "id": ".Instrument_UX",
+          "position": {
+            "left": 1790,
+            "top": 1130
+          },
+          "size": {
+            "width": 208.89075649832105,
+            "height": 189.00007354046238
+          },
+          "color": "cyan",
+          "columns": [
+            "instrument_id",
+            "name",
+            "version",
+            "description",
+            "min",
+            "max"
+          ]
+        },
+        {
+          "id": ".GameParticipant",
+          "position": {
+            "left": 2460,
+            "top": 830
+          },
+          "size": {
+            "width": 189.09379547476874,
+            "height": 164.999992849194
+          },
+          "color": "green",
+          "columns": [
+            "participant_id",
+            "game_id",
+            "player_id",
+            "join_time",
+            "leave_time"
+          ]
+        },
+        {
+          "id": ".User",
+          "position": {
+            "left": 1560,
+            "top": 860
+          },
+          "size": {
+            "width": 289.85940051033504,
+            "height": 165.00000091098437
+          },
+          "color": "violet",
+          "columns": [
+            "id",
+            "user_name",
+            "user_genre",
+            "user_level_of_exp",
+            "time_of_creation"
+          ]
+        },
+        {
+          "id": ".Telemetry_event",
+          "position": {
+            "left": 2950,
+            "top": 840
+          },
+          "size": {
+            "width": 191.31238845552997,
+            "height": 405.0000700791695
+          },
+          "color": "green",
+          "columns": [
+            "tel_id",
+            "participant_id",
+            "tic",
+            "pos_x",
+            "pox_y",
+            "pos_z",
+            "angulo",
+            "momentum_x",
+            "momentum_y",
+            "momentum_z",
+            "salud",
+            "armadura",
+            "municion",
+            "registrado_en",
+            "fov"
+          ]
+        },
+        {
+          "id": ".Sector",
+          "position": {
+            "left": 2480,
+            "top": 1700
+          },
+          "size": {
+            "width": 159.234285775012,
+            "height": 141.0000686215945
+          },
+          "color": "red",
+          "columns": [
+            "sector_id",
+            "map_id",
+            "sector_code",
+            "descri"
+          ]
+        },
+        {
+          "id": ".Player",
+          "position": {
+            "left": 2050,
+            "top": 880
+          },
+          "size": {
+            "width": 164.20322873130885,
+            "height": 117.0000119531569
+          },
+          "color": "rose",
+          "columns": [
+            "player_id",
+            "user_id",
+            "player_name"
+          ]
+        },
+        {
+          "id": ".Map",
+          "position": {
+            "left": 2160,
+            "top": 1450
+          },
+          "size": {
+            "width": 152.4376258159123,
+            "height": 213.0000871654953
+          },
+          "color": "indigo",
+          "columns": [
+            "id_map",
+            "episode",
+            "map_code",
+            "map_name",
+            "wide",
+            "length",
+            "end"
+          ]
+        },
+        {
+          "id": ".Game",
+          "position": {
+            "left": 2700,
+            "top": 1130
+          },
+          "size": {
+            "width": 161.81241467609138,
+            "height": 141.0000686215945
+          },
+          "color": "green",
+          "columns": [
+            "game_id",
+            "mapa_id",
+            "state",
+            "start"
+          ]
+        }
+      ],
+      "createdAt": 1777831119284,
+      "updatedAt": 1778740471159
+    }
+  },
+  "createdAt": 1778728201331,
+  "updatedAt": 1778728201331,
+  "version": 2
+}
